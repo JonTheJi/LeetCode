@@ -1,5 +1,6 @@
 /* remember to use either this or this for BS searching condition because nums[mid] would naturally == nums[start]
-   when nums.length < 3
+ * when nums.length < 3
+ * since you use either or => you know what your nums[mid] equals to, simply remove it by moving the index
 */
 public boolean search(int[] nums, int target) {
         class Solution {
