@@ -19,7 +19,7 @@ class Solution {
             }
         });
 
-        // So we sort the lists by the element's value
+        // So we sort the lists by the element's value, list in lists can be null
         for (ListNode node : lists) {
             if (node != null) {
                 pq.add(node);
