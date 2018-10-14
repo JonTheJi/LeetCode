@@ -3,29 +3,30 @@ class Solution {
         if (nums == null || nums.length == 0) {
             return -1;
         }
-        int[] index = {-1};
-        binarySearch(nums, target, 0, nums.length - 1, index);
-        return index[0];
+        int[] result = {-1};
+        binarySearch(nums, 0, nums.length - 1, target, result);
+        return result[0];
     }
-    private void binarySearch(int[] nums, int target, int start, int end, int[] index) {
-        int mid = start + (end - start) / 2;
-        if (start <= mid && mid <= end && nums[mid] == target) {
-            index[0] = mid;
-            return;
-        }
+    private void binarySearch(int[] nums, int start, int end, int target, int[] result) {
         if (start <= end) {
-            // if the left side is sorted, do BST on the left side if the element is there, else BST the right
-            if (nums[start] <= nums[mid]) {
-                if (target < nums[mid] && target >= nums[start]) {
-                    binarySearch(nums, target, start, mid - 1, index);
-                } else {
-                    binarySearch(nums, target, mid + 1, end, index);
-                }
+            int mid = start + (end - start) / 2;
+            if (nums[mid] == target) {
+                result[0] = mid;
+                return;
             } else {
-                if (target > nums[mid] && target <= nums[end]) {
-                    binarySearch(nums, target, mid + 1, end, index);
+                // which side ? first check which side is sorted, lets check the left side of the mid fst
+                if (nums[mid] > nums[end]) { // for binarySearch -> start will be the fst possible index that == mid
+                    if (nums[start] <= target && target < nums[mid]) { // use end to determine sorted side is better 
+                        binarySearch(nums, start, mid - 1, target, result);
+                    } else {
+                        binarySearch(nums, mid + 1, end, target, result);
+                    }
                 } else {
-                    binarySearch(nums, target, start, mid - 1, index);
+                    if (nums[mid] < target && target <= nums[end]) {
+                        binarySearch(nums, mid + 1, end, target, result);
+                    } else {
+                        binarySearch(nums, start, mid - 1, target, result);
+                    }
                 }
             }
         }
