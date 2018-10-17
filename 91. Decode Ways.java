@@ -30,54 +30,92 @@ class Solution {
   123
 0 123
 1 1
-// Dynamic programming O(n) space complexity
+// Dynamic programming O(n) space complexity top-> bottom
 class Solution {
     public int numDecodings(String s) {
         if (s == null || s.length() == 0) {
             return 0;
         }
-        // init the array for DP
-        int len = s.length();
-        int[] dp = new int[len + 1];
+        int[] memo = new int[s.length() + 1];
+        Arrays.fill(memo, -1);
+        int index = 0;
+        return decode(s.toCharArray(), index, memo);
+    }
+    private int decode (char[] s, int level, int[] memo) {
+        if (memo[level] != -1) {
+            return memo[level];
+        }
         // base case
+        if (level == s.length) {
+            memo[level] = 1;
+            return memo[level];
+        }
+        int ways = 0;
+        if (s[level] != '0') {
+            ways += decode(s, level + 1, memo);
+        }
+        if (validEncoding(s, level)) {
+            ways += decode(s, level + 2, memo);
+        }
+        memo[level] = ways;
+        return ways;
+    }
+    private boolean validEncoding(char[] array, int start) {
+        if (start + 1 >= array.length) {
+            return false;
+        }
+        if (array[start] == '1') {
+            return true;
+        }
+        if (array[start] == '2' && array[start  + 1] - '0' <= 6) {
+            return true;
+        }
+        return false;
+    }
+}
+
+// Dynamic programming O(n) space complexity top-> bottom
+class Solution {
+    public int numDecodings(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+
+        int[] dp = new int[s.length() + 1];
         dp[0] = 1;
-        dp[1] = s.charAt(0) == '0' ? 0 : 1;
-
-        for (int i = 2; i <= len; i++) {
+        dp[1] = (s.charAt(0) == '0') ? 0 : 1;
+        for (int i = 2; i <= s.length(); i++) {
             int first = s.charAt(i - 1) - '0';
-            int total = first+ (s.charAt(i - 2) - '0') * 10;
+            int second = s.charAt(i - 2) - '0';
+            int total = first + second * 10;
 
-            if (first > 0 && first <= 9) {
+            if (first >= 1 && first <= 9) {
                 dp[i] += dp[i - 1];
             }
-            if (total <= 26 && total >= 10) {
+            // 10 -> return 1
+            if (total >= 10 && total <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
-        return dp[len];
+        return dp[s.length()];
     }
 }
-// Dynamic programming O(n) space complexity
 
-
-  1 2 3
-0 1 2 3
-1
-
+// Dynamic programming O(1) space
 class Solution {
     public int numDecodings(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.length() == 0 || s.charAt(0) == '0') {
             return 0;
         }
-        // base case
         int c1 = 1;
         int c2 = 1;
 
-        for (int i = 1; i  <= s.length() - 1; i++) {
+        for (int i = 1; i < s.length(); i++) {
             int first = s.charAt(i) - '0';
-            int total = first + (s.charAt(i - 1) - '0') * 10;
+            int second = s.charAt(i - 1) - '0';
+            int total = first + second * 10;
 
-            if (first == 0) {
+            if (s.charAt(i) == '0') {
                 c1 = 0;
             }
             if (total >= 10 && total <= 26) {
